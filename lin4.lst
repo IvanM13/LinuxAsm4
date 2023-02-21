@@ -1,0 +1,52 @@
+     1                                  ; lin4.asm
+     2                                  extern printf
+     3                                  extern scanf
+     4                                  section .data
+     5 00000000 656E7465722074776F-     	msg db 'enter two numbers:',0
+     5 00000009 206E756D626572733A-
+     5 00000012 00                 
+     6 00000013 256C6620256C66000A-     	fmt dq "%lf %lf",10,0
+     6 0000001C 000000000000000000-
+     6 00000025 000000000000       
+     7 0000002B 726573756C74203D20-     	re  dq "result = %.2lf",10,0
+     7 00000034 252E326C6600000A00-
+     7 0000003D 000000000000000000-
+     7 00000046 0000000000         
+     8                                  section .bss
+     9 00000000 <res 200h>              	res resq 64
+    10                                  section .text
+    11                                  global main
+    12                                  main:
+    13 00000000 55                      push   rbp
+    14 00000001 4889E5                  mov    rbp,rsp
+    15 00000004 4883EC20                   sub    rsp,0x20
+    16 00000008 B828000000                 mov    rax,QWORD 0x28
+    17 0000000D 488945F8                   mov    QWORD [rbp-0x8],rax
+    18 00000011 31C0                       xor    eax,eax
+    19 00000013 488D0425[00000000]         lea    rax,[msg]       
+    20 0000001B 4889C7                     mov    rdi,rax
+    21 0000001E B800000000                 mov    eax,0x0
+    22 00000023 E8(00000000)               call   printf
+    23 00000028 488D55E8                   lea    rdx,[rbp-0x18]
+    24 0000002C 488D45E0                   lea    rax,[rbp-0x20]
+    25 00000030 4889C6                     mov    rsi,rax
+    26 00000033 488D0425[13000000]         lea    rax,[fmt]        
+    27 0000003B 4889C7                     mov    rdi,rax
+    28 0000003E B800000000                 mov    eax,0x0
+    29 00000043 E8(00000000)               call   scanf
+    30 00000048 F20F104DE0                 movsd  xmm1,QWORD [rbp-0x20]
+    31 0000004D F20F1045E8                 movsd  xmm0,QWORD [rbp-0x18]
+    32 00000052 F20F59C1                   mulsd  xmm0,xmm1
+    33 00000056 F20F1145F0                 movsd  QWORD [rbp-0x10],xmm0
+    34 0000005B 488B45F0                   mov    rax,QWORD [rbp-0x10]
+    35 0000005F 66480F6EC0                 movq   xmm0,rax
+    36 00000064 488D0425[2B000000]         lea    rax,[re]       
+    37 0000006C 4889C7                     mov    rdi,rax
+    38 0000006F B801000000                 mov    eax,0x1
+    39 00000074 E8(00000000)               call   printf
+    40                                  
+    41 00000079 B800000000                 mov    eax,0x0
+    42 0000007E 488B55F8                   mov	  rdx,QWORD [rbp-0x8]
+    43 00000082 4883EA28                   sub    rdx,QWORD 0x28
+    44 00000086 C9                      leave
+    45 00000087 C3                      ret
